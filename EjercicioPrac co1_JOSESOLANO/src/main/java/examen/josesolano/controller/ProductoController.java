@@ -1,5 +1,4 @@
-package  examen.josesolano.controller;
-
+package examen.josesolano.controller;
 
 import examen.josesolano.domain.Producto;
 import examen.josesolano.services.ProductoService;
@@ -15,36 +14,36 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/producto")
-public class cathControllers {
-  
+public class ProductoController {
+
     @Autowired
     private ProductoService productoService;
-    
+
     @GetMapping("/listado")
     private String listado(Model model) {
         var productos = productoService.getProductos(false);
         model.addAttribute("productos", productos);
-        model.addAttribute("totalProductos",productos.size());
+        model.addAttribute("totalProductos", productos.size());
         return "/producto/listado";
     }
-    
-     @GetMapping("/nuevo")
+
+    @GetMapping("/nuevo")
     public String productoNuevo(Producto producto) {
         return "/producto/modifica";
     }
 
     @Autowired
     private FirebaseStorageServiceImpl firebaseStorageService;
-    
+
     @PostMapping("/guardar")
     public String productoGuardar(Producto producto,
-            @RequestParam("imagenFile") MultipartFile imagenFile) {        
+            @RequestParam("imagenFile") MultipartFile imagenFile) {
         if (!imagenFile.isEmpty()) {
             productoService.save(producto);
             producto.setRutaImagen(
                     firebaseStorageService.cargaImagen(
-                            imagenFile, 
-                            "producto", 
+                            imagenFile,
+                            "producto",
                             producto.getIdProducto()));
         }
         productoService.save(producto);
@@ -62,5 +61,5 @@ public class cathControllers {
         producto = productoService.getProducto(producto);
         model.addAttribute("producto", producto);
         return "/producto/modifica";
-    }   
+    }
 }
